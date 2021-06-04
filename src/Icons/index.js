@@ -1,25 +1,19 @@
 import L from 'leaflet'
-import markerPerson from '../assets/images/map-marker.png'
-import markerBus from '../assets/images/bus.png'
-
-const iconConfig = {  
-  iconAnchor: null,
-  popupAnchor: null,
-  shadowUrl: null,
-  shadowSize: null,
-  shadowAnchor: null,
-}
+import markerUser from '../assets/images/user-marker.png'
+import markerBus from '../assets/images/location-pin.png'
 
 const iconMarkerPerson = new L.Icon({
-  iconUrl: markerPerson,
-  iconRetinaUrl: markerPerson,
-  className: 'leaflet-marker-icon'
+  iconUrl: markerUser,
+  iconRetinaUrl: markerUser,
+  className: 'leaflet-marker-icon-user',  
+  iconSize: new L.Point(75, 75),
 })
 
 const iconMarkerBus = new L.Icon({
   iconUrl: markerBus,
   iconRetinaUrl: markerBus,
-  className: 'leaflet-marker-icon'
+  className: 'leaflet-marker-icon',  
+  iconSize: new L.Point(60, 75),
 })
 
 export { iconMarkerPerson, iconMarkerBus }

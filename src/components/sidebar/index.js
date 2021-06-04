@@ -27,10 +27,10 @@ const Sidebar = () => {
       getShapes(data.shapeId),
       getBusPositions(data.lineId)
     ])
-    .then(([shapeResponse, busPositionsResponse]) => {
+    .then(async ([shapeResponse, busPositionsResponse]) => {
       const { data: shapes } = shapeResponse;
       const { data: busPositions } = busPositionsResponse;
-
+      
       setShapes(shapes.map(({ lat, lng }) => [lat, lng]))
       setBusPositions(busPositions.vehicles.map(({ prefix, lat, lng }) => {
         return { prefix, coords: [lat, lng] }
@@ -51,7 +51,6 @@ const Sidebar = () => {
   }
 
   const setBusPositions = (positions) => {
-    console.log(positions)
     dispatch({ type: 'SET_BUS_POSITIONS', data: positions })
   }
 

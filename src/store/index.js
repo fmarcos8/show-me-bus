@@ -10,7 +10,7 @@ function rootReducer(state = INITIAL_STATE, action) {
     case 'SET_SHAPES':
       return {...state, shapes: [...state.shapes, action.data]}
     case 'SET_BUS_POSITIONS':
-      return {...state, busPositions: [...state.busPositions, action.data]}
+      return {...state, busPositions: action.data}
     default:
       return state;
   }

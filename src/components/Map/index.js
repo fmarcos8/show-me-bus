@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { MapContainer, TileLayer, Marker, Polyline, Popup } from 'react-leaflet'
 import { useSelector } from 'react-redux'
+import { iconMarkerPerson } from 'Icons'
 
 import './style.css'
 
@@ -26,29 +27,24 @@ const Map = () => {
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
         />
         
-        <Polyline color="#220bb9" positions={shapes} />
-        {busPositions.map(positions => {
-          positions.map(pos => console.log(pos))
-          // return (
-          //   <Marker 
-          //     key={position.prefix} 
-          //     marker_index={position.prefix}
-          //     position={{ lat: position.coords[0], lng: position.coords[1] }}
-          //   >
-          //     <Popup>
-          //       { position.prefix }
-          //     </Popup>
-          //   </Marker>
-          // )
-        })}
+        <Polyline
+          positions={shapes} 
+        />
+        {busPositions.map(pos => (
+          <Marker
+            key={pos.prefix}
+            position={pos.coords}
+          >
+            <Popup>
+              { pos.prefix }
+            </Popup>
+          </Marker>
+        ))}          
+          
         <Marker 
-          // icon={iconMarkerPerson} 
+          icon={iconMarkerPerson} 
           position={userPosition}
-        >
-          <Popup>
-            ME
-          </Popup>
-        </Marker>
+        />
       </MapContainer>
     ) : null}
   </>)
