@@ -122,7 +122,11 @@ const Sidebar = () => {
             <Button 
               size="sm" 
               variant="danger"
-              onClick={() => setLines([])}
+              onClick={() => {
+                setLines([])
+                setBusPositions([])
+                setShapes([])
+              }}
             >
               Limpar <FaTrash />
             </Button>
