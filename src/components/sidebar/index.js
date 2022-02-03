@@ -1,9 +1,11 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { Button, Col, Form, InputGroup, Row, ListGroup, Spinner } from 'react-bootstrap'
 import { ProSidebar, SidebarHeader, SidebarContent } from 'react-pro-sidebar';
 import { FaSearch, FaArrowRight, FaArrowLeft, FaTrash } from 'react-icons/fa';
 import { useDispatch } from 'react-redux';
 import api from 'api'
+import Echo from 'laravel-echo'
+import Socketio from 'socket.io-client'
 
 import 'react-pro-sidebar/dist/css/styles.css';
 
@@ -12,6 +14,30 @@ const Sidebar = () => {
   const [searchTerm, setSearchTerm] = useState("")
   const [isLoading, setIsLoading] = useState(false)
   const dispatch = useDispatch();
+
+  const options = {
+    broadcaster: 'socket.io',
+    key: '1fa1480f754ebef153fe2a2ba1d2d15f',
+    host: `${window.location.hostname}:6001`,
+    client: Socketio.io
+  }
+
+
+  useEffect(() => {
+    console.log(options)
+    var echo_instance = new Echo(options)
+
+    initListen(echo_instance)
+  }, [])
+
+  const initListen = (echo) => {
+    console.log("teste")
+    echo
+      .channel('Notification.Test')
+      .listen('AlertEvent', (data) => {
+        console.log(data)
+      })
+  }
 
   const getLines = (term) => {
     setIsLoading(true)
@@ -23,6 +49,7 @@ const Sidebar = () => {
   }
 
   const getShapesAndBusPositions = (data) => {
+
     Promise.all([
       getShapes(data.shapeId),
       getBusPositions(data.lineId)
@@ -32,10 +59,11 @@ const Sidebar = () => {
       const { data: busPositions } = busPositionsResponse;
       
       setShapes(shapes.map(({ lat, lng }) => [lat, lng]))
+
       setBusPositions(busPositions.vehicles.map(({ prefix, lat, lng }) => {
         return { prefix, coords: [lat, lng] }
       }))
-    })    
+    })
   }
 
   const getShapes = shapeId => {
@@ -54,7 +82,7 @@ const Sidebar = () => {
     dispatch({ type: 'SET_BUS_POSITIONS', data: positions })
   }
 
-  const buildLineItem = line =>{
+  const buildLineItem = line => {
     return (
       <Row>
         <Col md="12" className="d-flex flex-column">
@@ -63,7 +91,7 @@ const Sidebar = () => {
             {line.direction === 1 ? <FaArrowRight color={"green"} /> : <FaArrowLeft color={"red"} />}  {' '}
             {line.secondaryTerminal}
           </span>
-          <span style={{ fontSize: '12px' }}>{ `${line.displaySign}-${line.type}` }</span>
+          <span style={{ fontSize: '12px' }}>{`${line.displaySign}-${line.type}`}</span>
         </Col>
       </Row>
     )
@@ -103,7 +131,7 @@ const Sidebar = () => {
                     placeholder="Ex.: 5024-31 ou Jabaquara"
                   />
                   <InputGroup.Append>
-                    <Button 
+                    <Button
                       onClick={() => {
                         if (searchTerm.length >= 4) {
                           getLines(searchTerm)
@@ -111,7 +139,7 @@ const Sidebar = () => {
                       }}
                       variant="info"
                     >
-                      {isLoading ? <Spinner animation="border" size="sm" /> : <FaSearch /> }                      
+                      {isLoading ? <Spinner animation="border" size="sm" /> : <FaSearch />}
                     </Button>
                   </InputGroup.Append>
                 </InputGroup>
@@ -119,8 +147,8 @@ const Sidebar = () => {
             </Form>
           </Col>
           <Col md="12">
-            <Button 
-              size="sm" 
+            <Button
+              size="sm"
               variant="danger"
               onClick={() => {
                 setLines([])
@@ -139,7 +167,7 @@ const Sidebar = () => {
                   key={line.lineId}
                   onClick={() => getShapesAndBusPositions(line)}
                 >
-                  { buildLineItem(line) }
+                  {buildLineItem(line)}
                 </ListGroup.Item>
               ))}
             </ListGroup>
